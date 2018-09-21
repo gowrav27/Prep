@@ -1,0 +1,16 @@
+package com.blogspot.aknowakowski;
+
+import java.sql.Date;
+
+public class HelpTest
+{
+
+    public static void main(String[] args)
+    {
+        Date date = new java.sql.Date(System.currentTimeMillis() - 86400000);
+
+        System.out.println(date);
+
+    }
+
+}

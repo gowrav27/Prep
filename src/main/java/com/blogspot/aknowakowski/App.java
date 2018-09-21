@@ -1,0 +1,91 @@
+package com.blogspot.aknowakowski;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.joda.time.LocalDateTime;
+
+public class App
+{
+    public static void main(String[] args)
+    {
+        SessionFactory sessionFactory;
+        sessionFactory = new Configuration().configure() // configures settings from
+                                                         // hibernate.cfg.xml
+                .buildSessionFactory();
+
+        // retrieve_payment(sessionFactory);
+        // insert_hibernateLatest(sessionFactory);
+        retreieve_hibernateLatest(sessionFactory);
+
+    }
+
+    private static void retrieve_payment(SessionFactory sessionFactory)
+    {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("person_domainmodel_testsetup");
+        EntityManager em = emf.createEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Payment> criteria = criteriaBuilder.createQuery(Payment.class);
+        Root<Payment> rp = criteria.from(Payment.class);
+
+        Predicate predicate = em.getCriteriaBuilder().equal(rp.get(Payment_.date), new Date());
+        criteria.where(predicate);
+
+        TypedQuery<Payment> q = em.createQuery(criteria);
+        List<Payment> payments = q.getResultList();
+        System.out.println(payments);
+
+    }
+
+    public static void retreieve_hibernateLatest(SessionFactory sessionFactory)
+    {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("person_domainmodel_testsetup");
+        EntityManager em = emf.createEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
+        Root<Task> root22 = criteriaQuery.from(Task.class);
+
+        // ParameterExpression<Date> p = criteriaBuilder.parameter(Date.class);
+
+        Predicate predicate = criteriaBuilder.lessThanOrEqualTo(root22.get(Task_.javaDate2), new java.sql.Timestamp(0));
+        Predicate predicate2 = criteriaBuilder.lessThanOrEqualTo(root22.get(Task_.javaDate), new java.sql.Timestamp(0));
+        criteriaQuery.where(predicate, predicate2);
+        criteriaQuery.select(root22);
+
+        TypedQuery<Task> query = em.createQuery(criteriaQuery);
+        // query.setParameter(p, new java.sql.Timestamp(0));
+
+        List<Task> tasks = query.getResultList();
+        System.out.println(tasks);
+    }
+
+    public static void insert_hibernateLatest(SessionFactory sessionFactory)
+    {
+        Session session = sessionFactory.openSession();
+
+        Transaction tx = session.beginTransaction();
+        Task task = new Task();
+        task.setId(new Long(7));
+        task.setName("Name random");
+        task.setDescription("Software company");
+        task.setJavaDate(new Date());
+        task.setJavaDate2(new Date());
+        task.setLocalJodaDate(new LocalDateTime());
+        session.save(task);
+        tx.commit();
+        session.close();
+    }
+}

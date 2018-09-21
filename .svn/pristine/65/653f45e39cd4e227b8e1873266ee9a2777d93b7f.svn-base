@@ -1,0 +1,7 @@
+#Project properties
+project.organization=com.blogspot.aknowakowski
+project.name=5
+sbt.version=0.13.0
+project.version=1.0
+scala.version=2.10.3
+project.initialize=false

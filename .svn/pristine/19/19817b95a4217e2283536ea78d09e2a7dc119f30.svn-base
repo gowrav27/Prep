@@ -1,0 +1,8 @@
+Hibernate 5.0.9 not working, 
+This version and this branch make sures the UserType (EnterpriseTimestampType) nullSafeSet is not called, with code as in our source development environment for patient alias search
+
+
+Other details needed to run this project
+1) Mysql is needed
+To install myqsl (and other basic info please see the below video)
+https://www.youtube.com/watch?v=-cHS4HoEFV8
